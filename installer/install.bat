@@ -8,6 +8,8 @@ echo.
 
 set INSTALL_DIR=%LOCALAPPDATA%\RemedyAssistant
 set PROXY=http://proxy-bvcol.admin.ch:8080
+set HTTP_PROXY=%PROXY%
+set HTTPS_PROXY=%PROXY%
 
 echo Creating installation directory...
 mkdir "%INSTALL_DIR%" 2>nul
@@ -35,7 +37,7 @@ powershell -Command "Invoke-WebRequest -Uri 'https://bootstrap.pypa.io/get-pip.p
 
 echo.
 echo Installing Python packages...
-"%INSTALL_DIR%\python\python.exe" -m pip install --quiet --proxy=%PROXY% -r "%INSTALL_DIR%\backend\requirements.txt"
+"%INSTALL_DIR%\python\python.exe" -m pip install --quiet -r "%INSTALL_DIR%\backend\requirements.txt"
 
 echo.
 echo Creating launcher...
