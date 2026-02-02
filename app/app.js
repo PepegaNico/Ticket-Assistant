@@ -2,7 +2,8 @@
  * Remedy Ticket Assistant - Web App
  */
 
-const BACKEND_URL = 'http://localhost:5000';
+// Use current host for backend URL (works both locally and remotely)
+const BACKEND_URL = window.location.origin;
 let currentTranslation = null;
 
 // Initialize app
