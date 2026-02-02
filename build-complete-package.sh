@@ -52,6 +52,8 @@ echo ============================================
 echo.
 
 set INSTALL_DIR=%LOCALAPPDATA%\RemedyAssistant
+set HTTP_PROXY=http://proxy-bvcol.admin.ch:8080
+set HTTPS_PROXY=http://proxy-bvcol.admin.ch:8080
 
 echo Creating installation directory...
 mkdir "%INSTALL_DIR%" 2>nul
@@ -65,6 +67,31 @@ python\python.exe -m pip install --no-index --find-links pip-packages pip setupt
 
 echo Installing Python packages (offline)...
 python\python.exe -m pip install --no-index --find-links pip-packages -r backend\requirements.txt
+
+echo.
+echo Downloading Ollama installer...
+powershell -Command "Invoke-WebRequest -Uri 'https://ollama.com/download/OllamaSetup.exe' -OutFile '%TEMP%\OllamaSetup.exe' -Proxy '%HTTP_PROXY%'"
+
+echo.
+echo Installing Ollama...
+echo This may take a few minutes...
+start /wait "" "%TEMP%\OllamaSetup.exe" /VERYSILENT /SUPPRESSMSGBOXES /NORESTART
+del "%TEMP%\OllamaSetup.exe"
+
+echo.
+echo Setting up Ollama with proxy...
+setx OLLAMA_HOST "0.0.0.0:11434"
+setx HTTP_PROXY "http://proxy-bvcol.admin.ch:8080"
+setx HTTPS_PROXY "http://proxy-bvcol.admin.ch:8080"
+
+echo.
+echo Waiting for Ollama service to start...
+timeout /t 10 /nobreak >nul
+
+echo.
+echo Downloading AI model (llama3.2:3b - ~2GB)...
+echo This will take several minutes...
+"%USERPROFILE%\AppData\Local\Programs\Ollama\ollama.exe" pull llama3.2:3b
 
 echo Creating launcher...
 (
@@ -82,12 +109,8 @@ echo ============================================
 echo Installation Complete!
 echo ============================================
 echo.
-echo IMPORTANT: You still need to install Ollama
-echo 1. Download from: https://ollama.ai/download/windows
-echo 2. Install Ollama
-echo 3. Open PowerShell and run: ollama pull llama3.2:3b
-echo.
-echo After that, use the "Remedy Assistant" shortcut
+echo Use the "Remedy Assistant" shortcut on your desktop to start
+echo Access the app at: http://localhost:5000
 echo.
 pause
 EOF
