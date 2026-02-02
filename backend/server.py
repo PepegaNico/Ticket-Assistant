@@ -10,14 +10,18 @@ Translation is done via Google Translate (free tier, no API key required).
 For completely offline translation, you can set up a local LibreTranslate instance.
 """
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from deep_translator import GoogleTranslator
 import requests
 import os
 import logging
 
-app = Flask(__name__)
+# Get the parent directory to access app folder
+PARENT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+APP_DIR = os.path.join(PARENT_DIR, 'app')
+
+app = Flask(__name__, static_folder=APP_DIR)
 CORS(app)  # Allow extension to connect
 
 # Configure logging
@@ -26,6 +30,18 @@ logger = logging.getLogger(__name__)
 
 # Configuration
 OLLAMA_URL = os.environ.get('OLLAMA_URL', 'http://localhost:11434')
+
+
+@app.route('/')
+def index():
+    """Serve the main web application"""
+    return send_from_directory(APP_DIR, 'index.html')
+
+
+@app.route('/<path:path>')
+def static_files(path):
+    """Serve static files (CSS, JS, etc.)"""
+    return send_from_directory(APP_DIR, path)
 
 
 @app.route('/health', methods=['GET'])
