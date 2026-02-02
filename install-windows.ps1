@@ -71,11 +71,11 @@ if (-not (Test-Path "$pythonDir\python.exe")) {
 
 # Install Python dependencies
 Write-Host "[4/6] Installing Python packages..." -ForegroundColor Green
-try {
-    & "$pythonDir\python.exe" -m pip install --quiet --no-warn-script-location -r "$InstallPath\backend\requirements.txt"
+$pipResult = & "$pythonDir\python.exe" -m pip install --quiet --no-warn-script-location -r "$InstallPath\backend\requirements.txt" 2>&1
+if ($LASTEXITCODE -eq 0) {
     Write-Host "   ✓ Python packages installed" -ForegroundColor Green
-} catch {
-    Write-Host "   ✗ Failed to install packages: $_" -ForegroundColor Red
+} else {
+    Write-Host "   ✗ Failed to install packages" -ForegroundColor Red
     Write-Host "   Continuing anyway..." -ForegroundColor Yellow
 }
 
