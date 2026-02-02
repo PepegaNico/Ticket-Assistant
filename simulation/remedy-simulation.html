@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMC Remedy SmartIT - Ticket Simulation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+
+        .remedy-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .remedy-header {
+            background: #0066cc;
+            color: white;
+            padding: 15px 20px;
+            border-bottom: 3px solid #0052a3;
+        }
+
+        .remedy-header h1 {
+            font-size: 18px;
+            font-weight: normal;
+        }
+
+        .ticket-info {
+            background: #e8f4f8;
+            padding: 15px 20px;
+            border-bottom: 1px solid #d0d0d0;
+            display: flex;
+            gap: 30px;
+        }
+
+        .ticket-info-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .ticket-info-item label {
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 2px;
+        }
+
+        .ticket-info-item span {
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .form-section {
+            padding: 20px;
+        }
+
+        .form-row {
+            margin-bottom: 20px;
+        }
+
+        .form-row label {
+            display: block;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .form-row input[type="text"],
+        .form-row select,
+        .form-row textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-family: Arial, sans-serif;
+            font-size: 13px;
+        }
+
+        .form-row textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-row.resolution textarea {
+            min-height: 150px;
+        }
+
+        .form-row input:focus,
+        .form-row select:focus,
+        .form-row textarea:focus {
+            outline: none;
+            border-color: #0066cc;
+            box-shadow: 0 0 3px rgba(0, 102, 204, 0.3);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .button-bar {
+            padding: 15px 20px;
+            background: #f5f5f5;
+            border-top: 1px solid #ddd;
+            display: flex;
+            gap: 10px;
+        }
+
+        .button-bar button {
+            padding: 8px 20px;
+            background: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .button-bar button:hover {
+            background: #0052a3;
+        }
+
+        .button-bar button.secondary {
+            background: #6c757d;
+        }
+
+        .button-bar button.secondary:hover {
+            background: #5a6268;
+        }
+
+        .required::after {
+            content: " *";
+            color: red;
+        }
+
+        /* Grid layout for some fields */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="remedy-container">
+        <div class="remedy-header">
+            <h1>Service Management - Incident Management</h1>
+        </div>
+
+        <div class="ticket-info">
+            <div class="ticket-info-item">
+                <label>Incident Number</label>
+                <span id="ticket-number">INC000012345678</span>
+            </div>
+            <div class="ticket-info-item">
+                <label>Status</label>
+                <span>In Progress</span>
+            </div>
+            <div class="ticket-info-item">
+                <label>Priority</label>
+                <span>Medium</span>
+            </div>
+            <div class="ticket-info-item">
+                <label>Assigned To</label>
+                <span>Service Desk Agent</span>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <!-- Hidden customer language field (as mentioned by user) -->
+            <input type="hidden" id="customer-language" value="DE">
+
+            <div class="form-grid">
+                <div class="form-row">
+                    <label for="template" class="required">Template</label>
+                    <select id="template" name="template">
+                        <option value="">-- Select Template --</option>
+                        <option value="password-reset">Password Reset</option>
+                        <option value="software-installation">Software Installation Request</option>
+                        <option value="hardware-issue">Hardware Issue</option>
+                        <option value="network-problem">Network Connectivity Problem</option>
+                        <option value="access-request">Access Rights Request</option>
+                        <option value="email-issue">Email Problem</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <label for="customer-name">Customer Name</label>
+                    <input type="text" id="customer-name" name="customer-name" value="Max Mustermann">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <label for="title" class="required">Title / Summary</label>
+                <input type="text" id="title" name="title" placeholder="Brief description of the issue" value="User cannot access shared folder">
+            </div>
+
+            <div class="form-row">
+                <label for="description" class="required">Description</label>
+                <textarea id="description" name="description" placeholder="Detailed description of the issue">User Max Mustermann reports that he cannot access the shared folder \\fileserver\projects since this morning. Error message: Access denied.</textarea>
+            </div>
+
+            <div class="form-row">
+                <label for="activity-notes">Activity Notes</label>
+                <textarea id="activity-notes" name="activity-notes" placeholder="Document your activities and communication">Called customer at 10:30. Customer confirmed the issue still persists. Checked AD permissions - user is member of correct group.</textarea>
+            </div>
+
+            <div class="form-row resolution">
+                <label for="resolution">Resolution</label>
+                <textarea id="resolution" name="resolution" placeholder="Document the solution provided">The issue was caused by a recent change in the folder permissions. I have re-added the user to the correct security group and verified access. The user can now successfully access the shared folder. Please contact the service desk if you experience any further issues.</textarea>
+            </div>
+
+            <div class="form-row">
+                <label for="resolution-category">Resolution Category</label>
+                <select id="resolution-category" name="resolution-category">
+                    <option value="">-- Select Category --</option>
+                    <option value="permissions">Permissions/Access Rights</option>
+                    <option value="configuration">Configuration Change</option>
+                    <option value="user-error">User Error</option>
+                    <option value="hardware">Hardware Related</option>
+                    <option value="software">Software Related</option>
+                    <option value="network">Network Related</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="button-bar">
+            <button type="button" class="primary">Save</button>
+            <button type="button" class="primary">Submit</button>
+            <button type="button" class="secondary">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        // Simple script to simulate some Remedy behavior
+        document.getElementById('template').addEventListener('change', function(e) {
+            console.log('Template selected:', e.target.value);
+        });
+
+        // Simulate language switching for testing
+        let languages = ['DE', 'EN', 'FR', 'ES'];
+        let currentLangIndex = 0;
+        
+        // Press L to cycle through languages (for testing)
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'l' || e.key === 'L') {
+                currentLangIndex = (currentLangIndex + 1) % languages.length;
+                document.getElementById('customer-language').value = languages[currentLangIndex];
+                console.log('Customer language changed to:', languages[currentLangIndex]);
+            }
+        });
+
+        console.log('Remedy Simulation loaded. Press "L" to cycle customer language (current: ' + 
+                    document.getElementById('customer-language').value + ')');
+    </script>
+</body>
+</html>

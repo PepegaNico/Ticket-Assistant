@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Build output
+dist/
+out/
+build/
+
+# System files
+.DS_Store
+Thumbs.db
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Backend
+../backend/venv/
+../backend/__pycache__/
+../backend/*.log
+../backend/*.pyc
+
+# Electron
+.webpack/

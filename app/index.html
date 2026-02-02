@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remedy Ticket Assistant</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <h1>🎫 Remedy Ticket Assistant</h1>
+                <div class="header-right">
+                    <span id="backend-status" class="status-badge">⏳ Checking...</span>
+                    <button class="header-btn" onclick="location.reload()">🔄 Refresh</button>
+                </div>
+            </div>
+            <nav class="tab-nav">
+                <button class="tab-btn active" data-tab="ticket">📋 Ticket</button>
+                <button class="tab-btn" data-tab="translator">🌐 Translator</button>
+                <button class="tab-btn" data-tab="about">ℹ️ About</button>
+            </nav>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Ticket Tab -->
+            <div id="ticket-tab" class="tab-content active">
+                <div class="ticket-container">
+                    <div class="ticket-header">
+                        <div class="ticket-info">
+                            <span><strong>Incident:</strong> INC000012345678</span>
+                            <span><strong>Status:</strong> <span class="badge badge-warning">In Progress</span></span>
+                            <span><strong>Priority:</strong> <span class="badge badge-info">Medium</span></span>
+                        </div>
+                    </div>
+
+                    <input type="hidden" id="customer-language" value="de">
+
+                    <div class="form-section">
+                        <div class="form-row">
+                            <label for="template">Template</label>
+                            <select id="template">
+                                <option value="">-- Select Template --</option>
+                                <option value="password-reset">Password Reset</option>
+                                <option value="software-installation">Software Installation</option>
+                                <option value="hardware-issue">Hardware Issue</option>
+                                <option value="network-problem">Network Problem</option>
+                                <option value="access-request">Access Rights Request</option>
+                            </select>
+                        </div>
+
+                        <div class="form-row">
+                            <label for="title">Title</label>
+                            <input type="text" id="title" placeholder="Brief description of the issue" 
+                                   value="User cannot access shared folder">
+                        </div>
+
+                        <div class="form-row">
+                            <label for="description">
+                                Description
+                                <button class="inline-btn btn-ai" id="btn-ai-questions">🤖 Get AI Suggestions</button>
+                            </label>
+                            <textarea id="description" rows="4">User Max Mustermann reports that he cannot access the shared folder \\fileserver\projects since this morning. Error message: Access denied.</textarea>
+                        </div>
+
+                        <div class="form-row">
+                            <label for="activity-notes">
+                                Activity Notes
+                                <button class="inline-btn btn-generate" id="btn-generate-resolution">✨ Generate Resolution</button>
+                            </label>
+                            <textarea id="activity-notes" rows="4">Called customer at 10:30. Customer confirmed the issue still persists. Checked AD permissions - user is member of correct group.</textarea>
+                        </div>
+
+                        <div class="form-row">
+                            <label for="resolution">
+                                Resolution
+                                <button class="inline-btn btn-translate" id="btn-translate">🌐 Translate</button>
+                            </label>
+                            <textarea id="resolution" rows="6">The issue was caused by a recent change in the folder permissions. I have re-added the user to the correct security group and verified access. The user can now successfully access the shared folder. Please contact the service desk if you experience any further issues.</textarea>
+                        </div>
+
+                        <div class="form-actions">
+                            <button class="btn btn-primary">💾 Save</button>
+                            <button class="btn btn-success">✅ Submit</button>
+                            <button class="btn btn-secondary">❌ Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Translator Tab -->
+            <div id="translator-tab" class="tab-content">
+                <div class="translator-container">
+                    <div class="translator-panel">
+                        <div class="translator-input">
+                            <div class="translator-header">
+                                <label>From</label>
+                                <select id="source-lang">
+                                    <option value="auto">Auto-detect</option>
+                                    <option value="en" selected>English</option>
+                                    <option value="de">German</option>
+                                    <option value="fr">French</option>
+                                    <option value="es">Spanish</option>
+                                </select>
+                            </div>
+                            <textarea id="source-text" rows="12" placeholder="Enter text to translate..."></textarea>
+                        </div>
+                        
+                        <div class="translator-arrow">→</div>
+                        
+                        <div class="translator-output">
+                            <div class="translator-header">
+                                <label>To</label>
+                                <select id="target-lang">
+                                    <option value="de" selected>German</option>
+                                    <option value="en">English</option>
+                                    <option value="fr">French</option>
+                                    <option value="es">Spanish</option>
+                                </select>
+                            </div>
+                            <textarea id="target-text" rows="12" placeholder="Translation will appear here..." readonly></textarea>
+                        </div>
+                    </div>
+                    <div class="translator-actions">
+                        <button class="btn btn-primary" id="btn-quick-translate">🌐 Translate</button>
+                        <button class="btn btn-secondary" id="btn-clear">🗑️ Clear</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- About Tab -->
+            <div id="about-tab" class="tab-content">
+                <div class="about-container">
+                    <h2>About Remedy Ticket Assistant</h2>
+                    <p class="version">Version 1.0.0</p>
+                    
+                    <div class="feature-section">
+                        <h3>✨ Features</h3>
+                        <ul>
+                            <li>🌐 <strong>Translation</strong> - Translate resolution text to any language</li>
+                            <li>🤖 <strong>AI Question Suggestions</strong> - Get relevant questions to ask customers</li>
+                            <li>✨ <strong>AI Resolution Generation</strong> - Auto-generate resolution text</li>
+                            <li>🔒 <strong>100% Local Processing</strong> - All data stays on your machine</li>
+                        </ul>
+                    </div>
+
+                    <div class="feature-section">
+                        <h3>🔧 Technology Stack</h3>
+                        <ul>
+                            <li><strong>Translation:</strong> Google Translate (free, no API key)</li>
+                            <li><strong>AI Engine:</strong> Ollama (local LLM)</li>
+                            <li><strong>Backend:</strong> Python + Flask</li>
+                            <li><strong>UI:</strong> HTML + CSS + JavaScript</li>
+                        </ul>
+                    </div>
+
+                    <div class="feature-section">
+                        <h3>🔐 Security & Privacy</h3>
+                        <ul>
+                            <li>✅ No data sent to external services</li>
+                            <li>✅ All processing happens locally</li>
+                            <li>✅ GDPR compliant</li>
+                            <li>✅ No telemetry or tracking</li>
+                        </ul>
+                    </div>
+
+                    <div class="backend-status-section">
+                        <h3>🔌 Backend Status</h3>
+                        <div id="backend-info" class="info-box">
+                            <p>Checking backend connection...</p>
+                        </div>
+                        <button class="btn btn-secondary" onclick="checkBackend()">🔄 Refresh Status</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="translation-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Translation Preview</h3>
+                <button class="modal-close" onclick="closeModal('translation-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="preview-section">
+                    <label>Original Text</label>
+                    <div id="preview-original" class="preview-text"></div>
+                </div>
+                <div class="preview-arrow">↓</div>
+                <div class="preview-section">
+                    <label id="preview-target-label">Translated Text</label>
+                    <div id="preview-translated" class="preview-text"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('translation-modal')">Cancel</button>
+                <button class="btn btn-primary" onclick="applyTranslation()">✅ Use Translation</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="questions-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🤖 AI-Suggested Questions</h3>
+                <button class="modal-close" onclick="closeModal('questions-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Ask these questions to better understand the issue:</p>
+                <ol id="questions-list" class="questions-list"></ol>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="closeModal('questions-modal')">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
