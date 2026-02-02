@@ -13,10 +13,46 @@ document.addEventListener('DOMContentLoaded', () => {
     setupTabs();
     setupEventListeners();
     checkBackend();
+    loadTicketFromURL();
     
     // Check backend status periodically
     setInterval(checkBackend, 10000);
 });
+
+// Load ticket data from URL parameters (for bookmarklet integration)
+function loadTicketFromURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const ticketData = urlParams.get('ticket');
+    
+    if (ticketData) {
+        try {
+            const ticket = JSON.parse(decodeURIComponent(ticketData));
+            console.log('[App] Loading ticket from URL:', ticket);
+            
+            // Fill in ticket description
+            if (ticket.description) {
+                document.getElementById('ticket-description').value = ticket.description;
+            }
+            
+            // Add ticket info to the UI
+            if (ticket.ticketId || ticket.summary) {
+                const infoDiv = document.createElement('div');
+                infoDiv.className = 'ticket-info';
+                infoDiv.style.cssText = 'background: #e8f4f8; padding: 10px; margin-bottom: 15px; border-radius: 5px; font-size: 12px;';
+                infoDiv.innerHTML = `
+                    <strong>Ticket loaded from Remedy:</strong><br>
+                    ${ticket.ticketId ? `ID: ${ticket.ticketId}<br>` : ''}
+                    ${ticket.summary ? `Summary: ${ticket.summary}<br>` : ''}
+                    ${ticket.category ? `Category: ${ticket.category}<br>` : ''}
+                    ${ticket.userName ? `User: ${ticket.userName}` : ''}
+                `;
+                document.querySelector('.tab-content.active').prepend(infoDiv);
+            }
+        } catch (e) {
+            console.error('[App] Error parsing ticket data:', e);
+        }
+    }
+}
 
 // Tab switching
 function setupTabs() {
