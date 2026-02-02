@@ -4,7 +4,9 @@
 (function() {
     'use strict';
 
-    const ASSISTANT_URL = 'http://10.128.128.178:5000';
+    // Backend URL - use localhost if installed on local PC, or VDI IP if accessible
+    const ASSISTANT_URL = 'http://localhost:5000';
+    // If you get firewall/CORS errors, the backend must run on the same PC as your browser!
     
     console.log('[Remedy Assistant] Injecting buttons...');
 
