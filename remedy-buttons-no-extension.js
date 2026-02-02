@@ -52,7 +52,8 @@
 
         // Create buttons
         const buttons = [
-            { text: '💬 Questions', action: generateQuestions, color: '#10b981' },
+            { text: '� Test Connection', action: testConnection, color: '#ef4444' },
+            { text: '�💬 Questions', action: generateQuestions, color: '#10b981' },
             { text: '✅ Resolution', action: generateResolution, color: '#3b82f6' },
             { text: '🇬🇧 English', action: () => translateText('en'), color: '#f59e0b' },
             { text: '🇩🇪 Deutsch', action: () => translateText('de'), color: '#f59e0b' },
@@ -198,19 +199,28 @@
     }
 
     async function generateQuestions() {
+        console.log('[Remedy Assistant] generateQuestions called');
         const data = getTicketData();
-        if (!data.description) return alert('⚠️ Please fill in the description first!');
+        console.log('[Remedy Assistant] Ticket data:', data);
+        
+        if (!data.description) {
+            alert('⚠️ Please fill in the description first!');
+            return;
+        }
 
         showLoading('🤖 Generating questions...');
         
         try {
+            console.log('[Remedy Assistant] Calling API:', `${ASSISTANT_URL}/api/ai-questions`);
             const res = await fetch(`${ASSISTANT_URL}/api/ai-questions`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ description: data.description })
             });
             
+            console.log('[Remedy Assistant] Response status:', res.status);
             const result = await res.json();
+            console.log('[Remedy Assistant] Result:', result);
             hideLoading();
             
             if (result.questions) {
@@ -219,6 +229,7 @@
                 alert('❌ Error: ' + (result.error || 'Unknown error'));
             }
         } catch (error) {
+            console.error('[Remedy Assistant] Error:', error);
             hideLoading();
             alert('❌ Cannot connect to assistant. Is the backend running?\n' + error.message);
         }
@@ -279,9 +290,50 @@
     }
 
     function openFullAssistant() {
-        const data = getTicketData();
-        const params = new URLSearchParams({ ticket: JSON.stringify(data) }).toString();
-        window.open(`${ASSISTANT_URL}?${params}`, 'Assistant', 'width=900,height=900');
+        console.log('[Remedy Assistant] openFullAssistant called');
+        try {
+            const data = getTicketData();
+            const url = `${ASSISTANT_URL}?ticket=${encodeURIComponent(JSON.stringify(data))}`;
+            console.log('[Remedy Assistant] Opening URL:', url);
+            const newWindow = window.open(url, 'Assistant', 'width=900,height=900');
+            if (!newWindow) {
+                alert('❌ Pop-up blocked! Please allow pop-ups for this site.');
+            }
+        } catch (error) {
+            console.error('[Remedy Assistant] Error opening window:', error);
+            alert('❌ Error: ' + error.message);
+        }
+    }
+
+    async function testConnection() {
+        console.log('[Remedy Assistant] Testing connection to:', ASSISTANT_URL);
+        showLoading('🔧 Testing connection...');
+        
+        try {
+            const res = await fetch(`${ASSISTANT_URL}/api/health`, {
+                method: 'GET',
+                mode: 'cors'
+            });
+            
+            hideLoading();
+            
+            if (res.ok) {
+                alert('✅ Connection successful!\n\nBackend is running at:\n' + ASSISTANT_URL);
+                console.log('[Remedy Assistant] Connection test passed');
+            } else {
+                alert('⚠️ Backend responded but with status: ' + res.status);
+            }
+        } catch (error) {
+            hideLoading();
+            console.error('[Remedy Assistant] Connection test failed:', error);
+            alert('❌ Cannot connect to backend!\n\n' +
+                  'Backend URL: ' + ASSISTANT_URL + '\n' +
+                  'Error: ' + error.message + '\n\n' +
+                  'Troubleshooting:\n' +
+                  '1. Is the backend running on VDI?\n' +
+                  '2. Can you access ' + ASSISTANT_URL + ' in a new tab?\n' +
+                  '3. Check firewall/proxy settings');
+        }
     }
 
     // Inject buttons
