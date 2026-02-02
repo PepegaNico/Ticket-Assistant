@@ -92,10 +92,33 @@
     }
 
     function getTicketData() {
-        // UPDATE THESE SELECTORS FOR YOUR REMEDY
+        // Try multiple selectors to find description field
+        const descField = document.querySelector('textarea[id*="Description"]') ||
+                         document.querySelector('textarea[name*="z1D_Action"]') ||
+                         document.querySelector('[aria-label="Description"]') ||
+                         document.querySelector('textarea[name*="Description"]') ||
+                         document.querySelector('textarea[name*="description"]') ||
+                         document.querySelector('textarea'); // Last resort: any textarea
+        
+        const description = descField?.value || '';
+        
+        // Debug logging
+        if (!description) {
+            console.error('❌ [Remedy Assistant] Cannot find description field!');
+            console.log('🔍 All textareas on page:');
+            document.querySelectorAll('textarea').forEach((field, i) => {
+                console.log(`Textarea ${i}:`, {
+                    id: field.id,
+                    name: field.name,
+                    'aria-label': field.getAttribute('aria-label'),
+                    value: field.value?.substring(0, 50) + '...'
+                });
+            });
+            console.log('💡 Copy one of the selectors above and update line 95 in the code');
+        }
+        
         return {
-            description: document.querySelector('textarea[id*="Description"]')?.value ||
-                        document.querySelector('textarea[name*="z1D_Action"]')?.value || '',
+            description: description,
             summary: document.querySelector('input[id*="Summary"]')?.value || '',
             ticketId: document.querySelector('input[id*="Incident_Number"]')?.value || '',
             category: document.querySelector('[aria-label="Categorization Tier 1"]')?.value || ''
