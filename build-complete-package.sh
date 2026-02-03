@@ -27,12 +27,12 @@ echo "import site" >> python/python312._pth
 
 echo
 echo "3. Downloading pip and all packages..."
-mkdir -p pip-packages
-cd pip-packages
+mkdir -p packages
+cd packages
 # Download pip itself
 pip download pip setuptools wheel
-# Download application packages
-pip download -r ../../backend/requirements.txt
+# Download application packages with all dependencies
+pip download flask flask-cors deep-translator requests urllib3 charset-normalizer idna certifi werkzeug itsdangerous click jinja2 markupsafe blinker beautifulsoup4 soupsieve
 cd ..
 
 echo
@@ -41,6 +41,10 @@ cp -r ../app ./
 cp -r ../backend ./
 cp ../launcher.py ./
 cp ../README.md ./
+cp ../start-services.bat ./
+cp ../start-services-hidden.vbs ./
+cp ../install-packages.bat ./
+cp ../WINDOWS_SETUP.md ./
 
 echo
 echo "5. Creating installer batch file..."
@@ -63,10 +67,15 @@ xcopy /E /I /Y "%~dp0*" "%INSTALL_DIR%\" >nul
 
 echo Installing pip (offline)...
 cd /d "%INSTALL_DIR%"
-python\python.exe -m pip install --no-index --find-links pip-packages pip setuptools wheel
+python\python.exe -m pip install --no-index --find-links packages pip setuptools wheel
 
 echo Installing Python packages (offline)...
-python\python.exe -m pip install --no-index --find-links pip-packages -r backend\requirements.txt
+python\python.exe -m pip install --no-index --find-links packages flask flask-cors deep-translator requests
+if errorlevel 1 (
+    echo ERROR: Failed to install packages!
+    echo Trying alternative method...
+    python\python.exe -m pip install --find-links packages --no-deps flask flask-cors deep-translator requests werkzeug itsdangerous click jinja2 markupsafe blinker beautifulsoup4 soupsieve urllib3 charset-normalizer idna certifi
+)
 
 echo.
 echo Downloading Ollama installer...
@@ -89,13 +98,9 @@ echo Waiting for Ollama service to start...
 timeout /t 10 /nobreak >nul
 
 echo.
-echo Downloading AI model (llama3.2:3b - ~2GB)...
-echo This will take several minutes...
-"%USERPROFILE%\AppData\Local\Programs\Ollama\ollama.exe" pull llama3.2:3b
-
-echo Creating launcher...
-(
-echo @echo off
+echo.
+echo Installation complete!
+echo Please see WINDOWS_SETUP.md for next steps
 echo cd /d "%%~dp0"
 echo start "" python\python.exe launcher.py
 echo echo Access at: http://localhost:5000
