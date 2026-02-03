@@ -52,3 +52,4 @@ package-lock.json
 # Environment variables
 .env
 .env.local
+windows-package/
